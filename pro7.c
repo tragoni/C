@@ -1,11 +1,13 @@
-/*시집 관리 프로그램*/
+/*시집 관리 프로그램
+내용읽기 추가는 나중에
+*/
 
 #include <stdio.h>
 #include <string.h>
 #define SIZE 20
 
 void menu(struct poemManager *p, int *c);
-void input(struct poemManager *p, int *c); 
+void input(struct poemManager *p, int *c);
 void search(struct poemManager *p, int *c);
 void dele(struct poemManager *p, int *c);
 void init(struct poemManager *p, int *c);
@@ -19,27 +21,39 @@ struct poemManager {
 
 int main(void)
 {
-
-	struct poemManager P[SIZE] = {
-		{1, "왜냐하면 우리는 우리를 모르고", "이제나"},
-		{2, "하늘과 바람과 별과 시", "윤동주"},
-		{3, "진달래꽃", "김소월"}
-	};
-	int count = 3;// 리스트 갯수
+	struct poemManager P[SIZE] = { 0 };
+	int count=0;
 	FILE *fp = NULL;
 
-	if ((fp = fopen("poem.dat", "rb") == NULL))
+	if ((fp = fopen("poem.dat", "rb")) == NULL)
 	{
-		puts("파일을 열 수 없습니다.\n");
 		init(P, &count);
-		exit(1);
+		if ((fp = fopen("poem.dat", "wb")) == NULL)
+		{
+			puts("파일을 열 수 없습니다.\n");
+			exit(1);
+		}
+		fwrite(P, sizeof(struct poemManager), SIZE, fp);
+		fwrite(&count, sizeof(int), 1, fp);
+		fclose(fp);
 	}
-
-
+	else
+	{
+		fread(P, sizeof(struct poemManager), SIZE, fp);
+		fread(&count, sizeof(int), 1, fp);
+		fclose(fp);
+	}
 
 	while (1)
 	{
+		printf("%d\n", count);
 		menu(P, &count);
+	}
+
+	if ((fp = fopen("poem.dat", "wb")) == NULL)
+	{
+		puts("파일을 열 수 없습니다.\n");
+		exit(1);
 	}
 	return 0;
 }
@@ -61,7 +75,12 @@ void menu(struct poemManager *P, int *c) {
 	else if (num == 4)
 	{
 		puts("프로그램을 종료합니다.");
-		exit();
+		FILE *fp2;
+		fp2 = fopen("poem.dat", "wb");
+		fwrite(P, sizeof(struct poemManager), SIZE, fp2);
+		fwrite(c, sizeof(int), 1, fp2);
+		fclose(fp2);
+		exit(1);
 	}
 	else
 	{
@@ -74,22 +93,19 @@ void menu(struct poemManager *P, int *c) {
 //초기값 설정
 void init(struct poemManager *P, int *c) {
 	
-	P->num = 1, strcpy(P->fname, "왜냐하면 우리는 우리를 모르고", strcpy(P->author, "이제나");
-	P->num = 2, strcpy(P->fname, "하늘과 바람과 별과 시", strcpy(P->author, "윤동주");
-	P->num = 3, strcpy(P->fname, "진달래꽃", strcpy(P->author, "김소월");
-		{2, "하늘과 바람과 별과 시", "윤동주"}
-		{3, "진달래꽃", "김소월"}
-	int count = 3;// 리스트 갯수
+	P->num = 1, strcpy(P->fname, "왜냐하면 우리는 우리를 모르고", strcpy(P->author, "이제나"));
+	(P + 1)->num = 2, strcpy((P + 1)->fname, "하늘과 바람과 별과 시", strcpy((P + 1)->author, "윤동주"));
+	(P + 2)->num = 3, strcpy((P + 2)->fname, "진달래꽃", strcpy((P + 2)->author, "김소월"));
+	 *c = 3;//리스트 갯수
 }
 
 //1번메뉴 입력
 void input(struct poemManager *P, int *c) {
-	(*c)++;
+	P[*c - 1].num = ++(*c);
 	printf("제목을 입력해주세요 : ");
 	scanf("%s", P[*c-1].fname);
 	printf("저자을 입력해주세요 : ");
 	scanf("%s", P[*c-1].author);
-	P[*c-1].num = *c;
 }
 
 //2번메뉴 탐색
