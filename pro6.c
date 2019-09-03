@@ -19,26 +19,28 @@ int main(void)
 	{
 	//왼쪽으로 회전
 	case -1:
-		for (int i = shift-1; i < strlen(bin); i++)
+		for (int i = 0; i < strlen(bin)-shift; i++)
 		{
 			nbin[i] = bin[i + shift];
 		}
 		for (int i = 0; i < shift; i++)
 		{
-			nbin[strlen(bin) - shift] = bin[i];
+			nbin[strlen(bin) - shift+i] = bin[i];
 		}
+		nbin[strlen(bin)] = NULL;
 		printf("원형 회전한 결과는 %s\n", nbin);
 		break;
 	//오른쪽으로 회전
 	case 1:
-		for (int i = shift-1; i < strlen(bin); i++)
+		for (int i = 0; i < strlen(bin)-shift; i++)
 		{
 			nbin[i+shift] = bin[i];
 		}
 		for (int i = 0; i < shift; i++)
 		{
-			nbin[i] = bin[strlen(bin) - shift];
+			nbin[i] = bin[strlen(bin) - shift+i];
 		}
+		nbin[strlen(bin)] = NULL;
 		printf("원형 회전한 결과는 %s\n", nbin);
 		break;
 	default:
