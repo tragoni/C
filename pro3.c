@@ -5,7 +5,7 @@ typedef struct LinkedList {
 	struct LinkedList *link;
 }Node;
 
-int main_pro3(void)
+int main(void)
 {
 	int input; //입력값
 	Node *list = NULL, *pd, *prev, *next, *chd;
@@ -13,6 +13,7 @@ int main_pro3(void)
 
 	while (1)
 	{
+		//노드생성
 		printf("양의 정수를 입력하세요(종료: -1): ");
 		scanf("%d", &input);
 		if (input == -1)
@@ -22,7 +23,8 @@ int main_pro3(void)
 		pd = (Node *)malloc(sizeof(Node));	//동적 메모리 할당
 		pd->i = input;
 		pd->link = NULL;
-		//첫번째 노드시
+
+		//헤더가 없다면
 		if (list == NULL)
 			list = pd;
 		else
@@ -30,37 +32,30 @@ int main_pro3(void)
 			//대소 비교후 삽입
 			chd = pd;
 			pd = list;
-			if (pd->i > chd->i)
+
+			while (pd != NULL)
 			{
-				chd->link = pd;
-				list = chd;
-			}
-			else if (pd->link == NULL)
-			{
-				pd->link = chd;
-			}
-			else
-			{
-				while (pd != NULL)
+				if (pd->i >= chd->i)
 				{
-					prev = pd;
-					pd = pd->link;
-					if (pd->i >= chd->i)
+					if (pd == list)
 					{
 						chd->link = pd;
-						prev->link = chd;
-						break;
+						list = chd;
 					}
-					if (pd->link == NULL)
+					else
 					{
-						pd->link = chd;
-						break;
+						prev->link = chd;
+						chd->link = pd;
 					}
+					break;
 				}
+				prev = pd;
+				pd = pd->link;
 			}
+			prev->link = chd;
 		}
-
 	}
+
 	//연결리스트 출력
 	pd = list;
 	while (pd != NULL)
