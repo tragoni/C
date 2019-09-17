@@ -52,7 +52,8 @@ int main(void)
 				prev = pd;
 				pd = pd->link;
 			}
-			prev->link = chd;
+			if (pd == NULL)
+				prev->link = chd;
 		}
 	}
 
